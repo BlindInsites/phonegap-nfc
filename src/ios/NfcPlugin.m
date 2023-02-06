@@ -136,9 +136,9 @@
     }
         NSArray *languages = [[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"];
         NSString *currentLanguage = [languages objectAtIndex:0];
-        NSString *enAlertMessage = @"Hold near writable NFC tag to update.";
-        NSString *esAlertMessage = @"Sostenga cerca de la etiqueta NFC grabable para actualizar.";
-        NSString *frAlertMessage = @"Maintenez près de la balise NFC inscriptible pour mettre à jour.";
+        NSString *enAlertMessage = @"Hold near WayTag to format.";
+        NSString *esAlertMessage = @"Mantenga cerca de WayTag para formatear.";
+        NSString *frAlertMessage = @"Maintenez près de WayTag pour formater.";
         if([currentLanguage hasPrefix: @"en"]) {
             self.nfcSession.alertMessage = enAlertMessage;
         } else if([currentLanguage hasPrefix: @"es"]) {
@@ -328,9 +328,9 @@
         sessionCallbackId = [command.callbackId copy];
         NSArray *languages = [[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"];
         NSString *currentLanguage = [languages objectAtIndex:0];
-        NSString *enAlertMessage = @"Hold near NFC tag to scan.";
-        NSString *esAlertMessage = @"Manténgalo cerca de la etiqueta NFC para escanear.";
-        NSString *frAlertMessage = @"Tenez près de la balise NFC pour numériser.";
+        NSString *enAlertMessage = @"Hold near WayTag to scan.";
+        NSString *esAlertMessage = @"Manténgalo cerca de WayTag para escanear.";
+        NSString *frAlertMessage = @"Tenez près de WayTag pour scanner.";
         if([currentLanguage hasPrefix: @"en"]) {
             self.nfcSession.alertMessage = enAlertMessage;
         } else if([currentLanguage hasPrefix: @"es"]) {
@@ -348,9 +348,9 @@
         sessionCallbackId = [command.callbackId copy];
         NSArray *languages = [[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"];
         NSString *currentLanguage = [languages objectAtIndex:0];
-        NSString *enAlertMessage = @"Hold near NFC tag to scan.";
-        NSString *esAlertMessage = @"Manténgalo cerca de la etiqueta NFC para escanear.";
-        NSString *frAlertMessage = @"Tenez près de la balise NFC pour numériser.";
+        NSString *enAlertMessage = @"Hold near WayTag to scan.";
+        NSString *esAlertMessage = @"Manténgalo cerca de WayTag para escanear.";
+        NSString *frAlertMessage = @"Tenez près de WayTag pour scanner.";
         if([currentLanguage hasPrefix: @"en"]) {
             self.nfcSession.alertMessage = enAlertMessage;
         } else if([currentLanguage hasPrefix: @"es"]) {
