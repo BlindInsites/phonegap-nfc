@@ -134,8 +134,20 @@
             self.nfcSession = [[NFCNDEFReaderSession new]initWithDelegate:self queue:nil invalidateAfterFirstRead:FALSE];
         }
     }
-
-    self.nfcSession.alertMessage = @"Hold near writable NFC tag to update.";
+        NSArray *languages = [[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"];
+        NSString *currentLanguage = [languages objectAtIndex:0];
+        NSString *enAlertMessage = @"Hold near writable NFC tag to update.";
+        NSString *esAlertMessage = @"Sostenga cerca de la etiqueta NFC grabable para actualizar.";
+        NSString *frAlertMessage = @"Maintenez près de la balise NFC inscriptible pour mettre à jour.";
+        if([currentLanguage hasPrefix: @"en"]) {
+            self.nfcSession.alertMessage = enAlertMessage;
+        } else if([currentLanguage hasPrefix: @"es"]) {
+            self.nfcSession.alertMessage = esAlertMessage;
+        } else if([currentLanguage hasPrefix: @"fr"]) {
+            self.nfcSession.alertMessage = frAlertMessage;
+        } else {
+            self.nfcSession.alertMessage = enAlertMessage;
+        }
     sessionCallbackId = [command.callbackId copy];
 
     if (reusingSession) {                   // reusing a read session to write
@@ -314,14 +326,40 @@
             self.nfcSession = [[NFCNDEFReaderSession new]initWithDelegate:self queue:nil invalidateAfterFirstRead:TRUE];
         }
         sessionCallbackId = [command.callbackId copy];
-        self.nfcSession.alertMessage = @"Hold near NFC tag to scan.";
+        NSArray *languages = [[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"];
+        NSString *currentLanguage = [languages objectAtIndex:0];
+        NSString *enAlertMessage = @"Hold near NFC tag to scan.";
+        NSString *esAlertMessage = @"Manténgalo cerca de la etiqueta NFC para escanear.";
+        NSString *frAlertMessage = @"Tenez près de la balise NFC pour numériser.";
+        if([currentLanguage hasPrefix: @"en"]) {
+            self.nfcSession.alertMessage = enAlertMessage;
+        } else if([currentLanguage hasPrefix: @"es"]) {
+            self.nfcSession.alertMessage = esAlertMessage;
+        } else if([currentLanguage hasPrefix: @"fr"]) {
+            self.nfcSession.alertMessage = frAlertMessage;
+        } else {
+            self.nfcSession.alertMessage = enAlertMessage;
+        }
         [self.nfcSession beginSession];
         
     } else if (@available(iOS 11.0, *)) {
         NSLog(@"iOS < 13, using NFCNDEFReaderSession");
         self.nfcSession = [[NFCNDEFReaderSession new]initWithDelegate:self queue:nil invalidateAfterFirstRead:TRUE];
         sessionCallbackId = [command.callbackId copy];
-        self.nfcSession.alertMessage = @"Hold near NFC tag to scan.";
+        NSArray *languages = [[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"];
+        NSString *currentLanguage = [languages objectAtIndex:0];
+        NSString *enAlertMessage = @"Hold near NFC tag to scan.";
+        NSString *esAlertMessage = @"Manténgalo cerca de la etiqueta NFC para escanear.";
+        NSString *frAlertMessage = @"Tenez près de la balise NFC pour numériser.";
+        if([currentLanguage hasPrefix: @"en"]) {
+            self.nfcSession.alertMessage = enAlertMessage;
+        } else if([currentLanguage hasPrefix: @"es"]) {
+            self.nfcSession.alertMessage = esAlertMessage;
+        } else if([currentLanguage hasPrefix: @"fr"]) {
+            self.nfcSession.alertMessage = frAlertMessage;
+        } else {
+            self.nfcSession.alertMessage = enAlertMessage;
+        }
         [self.nfcSession beginSession];
     } else {
         NSLog(@"iOS < 11, no NFC support");
