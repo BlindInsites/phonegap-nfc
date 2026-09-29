@@ -18,6 +18,7 @@
 @property (nonatomic, assign) BOOL returnTagInCallback;
 @property (nonatomic, assign) BOOL returnTagInEvent;
 @property (nonatomic, assign) BOOL keepSessionOpen;
+@property (strong, nonatomic) NSString *scanAlertMessage;
 @property (strong, nonatomic) NFCReaderSession *nfcSession API_AVAILABLE(ios(11.0));
 @property (strong, nonatomic) NFCNDEFMessage *messageToWrite API_AVAILABLE(ios(11.0));
 @end
@@ -68,8 +69,9 @@
     self.returnTagInCallback = YES;
     self.returnTagInEvent = NO;
 
-    NSArray<NSDictionary *> *options = [command argumentAtIndex:0];
+    NSDictionary *options = [command argumentAtIndex:0];
     self.keepSessionOpen = [options valueForKey:@"keepSessionOpen"];
+    self.scanAlertMessage = [options valueForKey:@"alertMessage"];
 
     [self startScanSession:command];
 }
@@ -90,16 +92,18 @@
 
 - (void)writeTag:(CDVInvokedUrlCommand*)command API_AVAILABLE(ios(13.0)){
     NSLog(@"writeTag");
-    
+
     self.writeMode = YES;
     self.shouldUseTagReaderSession = NO;
     BOOL reusingSession = NO;
-    
+
     NSArray<NSDictionary *> *ndefData = [command argumentAtIndex:0];
+    NSDictionary *options = [command argumentAtIndex:1];
+    NSString *alertMessage = [options valueForKey:@"alertMessage"];
 
     // Create the NDEF Message
     NSMutableArray<NFCNDEFPayload*> *payloads = [NSMutableArray new];
-                              
+
     @try {
         for (id recordData in ndefData) {
             NSNumber *tnfNumber = [recordData objectForKey:@"tnf"];
@@ -134,20 +138,11 @@
             self.nfcSession = [[NFCNDEFReaderSession alloc]initWithDelegate:self queue:nil invalidateAfterFirstRead:FALSE];
         }
     }
-        NSArray *languages = [[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"];
-        NSString *currentLanguage = [languages objectAtIndex:0];
-        NSString *enAlertMessage = @"Hold near WayTag to format.";
-        NSString *esAlertMessage = @"Mantenga cerca de WayTag para formatear.";
-        NSString *frAlertMessage = @"Maintenez près de WayTag pour formater.";
-        if([currentLanguage hasPrefix: @"en"]) {
-            self.nfcSession.alertMessage = enAlertMessage;
-        } else if([currentLanguage hasPrefix: @"es"]) {
-            self.nfcSession.alertMessage = esAlertMessage;
-        } else if([currentLanguage hasPrefix: @"fr"]) {
-            self.nfcSession.alertMessage = frAlertMessage;
-        } else {
-            self.nfcSession.alertMessage = enAlertMessage;
-        }
+    if (alertMessage != nil && [alertMessage length] > 0) {
+        self.nfcSession.alertMessage = alertMessage;
+    } else {
+        self.nfcSession.alertMessage = @"Hold near WayTag to format.";
+    }
     sessionCallbackId = [command.callbackId copy];
 
     if (reusingSession) {                   // reusing a read session to write
@@ -326,39 +321,21 @@
             self.nfcSession = [[NFCNDEFReaderSession alloc]initWithDelegate:self queue:nil invalidateAfterFirstRead:TRUE];
         }
         sessionCallbackId = [command.callbackId copy];
-        NSArray *languages = [[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"];
-        NSString *currentLanguage = [languages objectAtIndex:0];
-        NSString *enAlertMessage = @"Hold near WayTag to scan.";
-        NSString *esAlertMessage = @"Manténgalo cerca de WayTag para escanear.";
-        NSString *frAlertMessage = @"Tenez près de WayTag pour scanner.";
-        if([currentLanguage hasPrefix: @"en"]) {
-            self.nfcSession.alertMessage = enAlertMessage;
-        } else if([currentLanguage hasPrefix: @"es"]) {
-            self.nfcSession.alertMessage = esAlertMessage;
-        } else if([currentLanguage hasPrefix: @"fr"]) {
-            self.nfcSession.alertMessage = frAlertMessage;
+        if (self.scanAlertMessage != nil && [self.scanAlertMessage length] > 0) {
+            self.nfcSession.alertMessage = self.scanAlertMessage;
         } else {
-            self.nfcSession.alertMessage = enAlertMessage;
+            self.nfcSession.alertMessage = @"Hold near WayTag to scan.";
         }
         [self.nfcSession beginSession];
-        
+
     } else if (@available(iOS 11.0, *)) {
         NSLog(@"iOS < 13, using NFCNDEFReaderSession");
         self.nfcSession = [[NFCNDEFReaderSession alloc]initWithDelegate:self queue:nil invalidateAfterFirstRead:TRUE];
         sessionCallbackId = [command.callbackId copy];
-        NSArray *languages = [[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"];
-        NSString *currentLanguage = [languages objectAtIndex:0];
-        NSString *enAlertMessage = @"Hold near WayTag to scan.";
-        NSString *esAlertMessage = @"Manténgalo cerca de WayTag para escanear.";
-        NSString *frAlertMessage = @"Tenez près de WayTag pour scanner.";
-        if([currentLanguage hasPrefix: @"en"]) {
-            self.nfcSession.alertMessage = enAlertMessage;
-        } else if([currentLanguage hasPrefix: @"es"]) {
-            self.nfcSession.alertMessage = esAlertMessage;
-        } else if([currentLanguage hasPrefix: @"fr"]) {
-            self.nfcSession.alertMessage = frAlertMessage;
+        if (self.scanAlertMessage != nil && [self.scanAlertMessage length] > 0) {
+            self.nfcSession.alertMessage = self.scanAlertMessage;
         } else {
-            self.nfcSession.alertMessage = enAlertMessage;
+            self.nfcSession.alertMessage = @"Hold near WayTag to scan.";
         }
         [self.nfcSession beginSession];
     } else {
